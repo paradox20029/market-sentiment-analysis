@@ -1,0 +1,9 @@
+transformers
+torch
+pandas
+requests
+streamlit
+plotly
+yfinance
+newsapi-python
+matplotlib

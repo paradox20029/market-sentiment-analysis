@@ -1,0 +1,4 @@
+title,description,url,publishedAt,source
+"Company A posts record revenue","<p>Company A reported a strong quarter</p>","https://example.com/a","2025-10-16T12:00:00Z","example"
+"Company B cuts guidance","<p>Company B lowers future guidance</p>","https://example.com/b","2025-10-16T14:00:00Z","example"
+"Market opens higher","<p>Market responds positively to jobs data</p>","https://example.com/c","2025-10-17T09:30:00Z","example"

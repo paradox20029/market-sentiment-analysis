@@ -3,6 +3,13 @@ import pandas as pd
 import plotly.express as px
 import os
 import subprocess
+import sys
+from pathlib import Path
+
+# Ensure the repository root is on sys.path so local modules (etl, utils) can be imported
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+	sys.path.insert(0, str(REPO_ROOT))
 
 st.title("📈 Intelligent Market Sentiment System")
 

@@ -1,10 +1,16 @@
 import os
 import sys
-import requests
 import pandas as pd
 import datetime
 import xml.etree.ElementTree as ET
 from urllib.parse import quote_plus
+
+try:
+    import requests
+    _HAS_REQUESTS = True
+except Exception:
+    requests = None
+    _HAS_REQUESTS = False
 
 
 def safe_print(msg: str):
@@ -69,9 +75,17 @@ def fetch_from_google_rss(query="stock market", days=2):
     # Google News RSS supports search queries; adding a 'when' filter helps limit results
     q = f"{query} when:{days}d"
     url = f"https://news.google.com/rss/search?q={quote_plus(q)}&hl=en-US&gl=US&ceid=US:en"
-    r = requests.get(url, timeout=15)
-    r.raise_for_status()
-    root = ET.fromstring(r.content)
+    if _HAS_REQUESTS:
+        r = requests.get(url, timeout=15)
+        r.raise_for_status()
+        content = r.content
+    else:
+        # fallback to urllib
+        from urllib.request import Request, urlopen
+        req = Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible)"})
+        with urlopen(req, timeout=15) as resp:
+            content = resp.read()
+    root = ET.fromstring(content)
     items = root.findall('.//item')
     rows = []
     for it in items:

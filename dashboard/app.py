@@ -26,9 +26,22 @@ df, source = load_data()
 if df is None:
 	st.warning("No data found. Run the pipeline (click 'Run pipeline') or place a CSV in data/ named sentiment_results.csv or news.csv")
 	if st.button("Run pipeline"):
-		# call main.py to fetch and process data
-		subprocess.run(["python", "main.py"])
-		st.experimental_rerun()
+		st.info("Running pipeline — this may take a minute. The UI will not auto-reload on some hosts; refresh the page after it finishes.")
+		try:
+			# Lazy import pipeline functions so the app can start even if optional deps are missing
+			from etl.fetch_news import fetch_financial_news
+			from utils.sentiment_pipeline import run_sentiment_pipeline
+
+			# Run fetch + sentiment pipeline in-process. We avoid running main.py as a subprocess
+			# because that can fail on hosted platforms if the python environment differs.
+			fetch_financial_news("stock market", days=2)
+			run_sentiment_pipeline()
+
+			st.success("Pipeline completed — refresh the page to load the new data.")
+		except Exception as e:
+			st.error(f"Pipeline failed: {e}")
+			import traceback
+			st.text(traceback.format_exc())
 else:
 	st.info(f"Data source: {source}")
 	if 'sentiment' in df.columns:
